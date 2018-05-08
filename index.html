@@ -11,7 +11,8 @@
 </button>
 <script>
   require('./renderer.js')
-  const ant = require('./ant')
+  const Ant = require('./ant')
+  const ant = new Ant()
   const btnRun = document.getElementById('btnRun')
   btnRun.addEventListener('click', ant.run)
 </script>

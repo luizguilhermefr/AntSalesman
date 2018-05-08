@@ -1,8 +1,9 @@
 'use strict'
 
 const Ant = class {
-  static run () {
-    console.log('running')
+  run () {
+    this.coords = require('./airports').nodes
+    console.log(this.coords)
   }
 }
 
