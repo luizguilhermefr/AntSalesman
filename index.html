@@ -6,9 +6,14 @@
 </head>
 <body>
 <h1>Ant Salesman</h1>
+<button id='btnRun'>
+    Run
+</button>
 <script>
-  // You can also require other files to run in this process
   require('./renderer.js')
+  const ant = require('./ant')
+  const btnRun = document.getElementById('btnRun')
+  btnRun.addEventListener('click', ant.run)
 </script>
 </body>
 </html>

@@ -1,23 +1,14 @@
-const { app, BrowserWindow, Menu, MenuItem } = require('electron')
+const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const url = require('url')
-const ant = require('./ant')
+
+require('electron-debug')({ showDevTools: true })
 
 let mainWindow
-let menu
-let runItem
 
 function createWindow () {
   mainWindow = new BrowserWindow({ width: 800, height: 600 })
-
-  // menu
-  menu = new Menu()
-  runItem = new MenuItem({
-    label: 'Run',
-    click: ant.run
-  })
-  menu.append(runItem)
-  mainWindow.setMenu(menu)
+  mainWindow.setMenu(null)
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),

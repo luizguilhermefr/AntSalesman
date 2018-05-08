@@ -1,22 +1,23 @@
 {
-  "name": "electron-quick-start",
+  "name": "AntSalesman",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Traveler Salesman with Ant System and Electron",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/luizguilhermefr/AntSalesman",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "ant system",
+    "traveler salesman",
+    "electron"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "luizguilhermefr",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^2.0.0"
+  },
+  "dependencies": {
+    "electron-debug": "^1.5.0"
   }
 }
