@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Ant Salesman</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
 <body>
-<h1>Ant Salesman</h1>
-<button id='btnRun'>
-    Run
-</button>
+<div class='col-md-12'>
+    <h1>Ant Salesman</h1>
+    <form>
+        <div class='form-group'>
+            <label for='alpha'>alpha (α)</label>
+            <input type='number' value='1' placeholder='alpha' id='alpha' class="form-control">
+            <small class="form-text text-muted">Influência do feromônio</small>
+        </div>
+        <div class='form-group'>
+            <label for='beta'>beta (β)</label>
+            <input type='number' value='2' placeholder='beta' id='beta' class="form-control">
+            <small class="form-text text-muted">Influência da distância</small>
+        </div>
+        <button id='btnRun' class='btn btn-primary'>
+            Run
+        </button>
+    </form>
+</div>
 <script>
   require('./renderer.js')
   const Ant = require('./ant')
   const ant = new Ant()
   const btnRun = document.getElementById('btnRun')
-  btnRun.addEventListener('click', ant.run)
+  btnRun.addEventListener('click', (e) => {
+    e.preventDefault()
+    ant.run()
+  })
 </script>
 </body>
 </html>
