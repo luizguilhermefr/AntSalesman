@@ -27,35 +27,36 @@ class Edge {
 }
 
 class Ant {
-  constructor (initialCity, citiesLeft) {
+  constructor (initialCityId, citiesLeft) {
     this.citiesTraveled = []
     this.citiesLeft = citiesLeft
-    this.move(initialCity)
+    this.move(initialCityId)
   }
 
-  move (nextCity) {
-    this.currentCity = nextCity
-    this.citiesTraveled.push(nextCity)
-    this.citiesLeft = this.citiesLeft.filter((city) => city.id !== nextCity)
+  move (nextCityId) {
+    this.currentCityId = nextCityId
+    this.citiesTraveled.push(nextCityId)
+    this.citiesLeft = this.citiesLeft.filter((city) => city.id !== nextCityId)
   }
 }
 
 class AntSystem {
-  run (coords, alpha, beta, initialPheromone) {
+  run (coords, alpha, beta, tauZero) {
     this.alpha = alpha
     this.beta = beta
-    this.initialPheromone = initialPheromone
+    this.initialPheromone = tauZero
     this.initializeCities(coords)
     this.initializeEdgesMatrix()
     this.fillEdgesMatrix()
     this.disposeAnts()
+    this.moveAnts()
+    console.log(this.ants)
   }
 
   initializeCities (coords) {
     this.cities = []
     for (let i = 0; i < coords.length; i++) {
-      const city = new City(coords[ 0 ], coords[ 1 ], coords[ 2 ])
-      this.cities.push(city)
+      this.cities[ i ] = new City(i, coords[ i ][ 1 ], coords[ i ][ 2 ])
     }
   }
 
@@ -71,7 +72,7 @@ class AntSystem {
 
   fillEdgesMatrix () {
     for (let i = 0; i < this.cities.length; i++) {
-      for (let j = i + 1; j < this.cities.length; j++) {
+      for (let j = 0; j < this.cities.length; j++) {
         this.edgesMatrix[ i ][ j ] = new Edge(this.cities[ i ], this.cities[ j ], this.initialPheromone)
         this.edgesMatrix[ j ][ i ] = new Edge(this.cities[ j ], this.cities[ i ], this.initialPheromone)
       }
@@ -81,7 +82,8 @@ class AntSystem {
   disposeAnts () {
     this.ants = []
     for (let i = 0; i < this.cities.length; i++) {
-      this.ants.push(new Ant(i, this.cities.slice()))
+      const city = this.cities[ i ]
+      this.ants.push(new Ant(city.id, this.cities.slice()))
     }
   }
 
@@ -93,16 +95,30 @@ class AntSystem {
 
   moveAnt (antIndex) {
     const ant = this.ants[ antIndex ]
-    const currentCity = ant.currentCity
+    let probabilitiesSum = .0
     const probabilities = []
     for (let i = 0; i < ant.citiesLeft.length; i++) {
-      const probabilityOfTakingThisEdge = this.edgeProbability(ant, currentCity, i)
-      probabilities.push(probabilityOfTakingThisEdge)
+      const probabilityOfTakingThisEdge = this.edgeProbability(ant.currentCityId, i)
+      probabilities[ i ] = probabilityOfTakingThisEdge
+      probabilitiesSum += probabilityOfTakingThisEdge
+    }
+    const drawn = Math.random() * probabilitiesSum
+    let accumulated = .0
+    for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
+      if (accumulated[ i ] <= drawn && accumulated[ i + 1 ] >=
+        drawn) {
+        ant.move(ant.citiesLeft[ i ].id)
+        break
+      }
+      accumulated += probabilities[ i ]
     }
   }
 
-  edgeProbability (ant, sourceIndex, destinationIndex) {
-
+  edgeProbability (sourceIndex, destinationIndex) {
+    const edge = this.edgesMatrix[ sourceIndex ][ destinationIndex ]
+    const tauFactor = Math.pow(edge.pheromone, this.alpha)
+    const etaFactor = Math.pow(1 / edge.distance, this.beta)
+    return tauFactor * etaFactor
   }
 }
 
