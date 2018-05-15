@@ -6,5 +6,6 @@ document.getElementById('btnRun').addEventListener('click', (e) => {
   e.preventDefault()
   const alpha = document.getElementById('beta').value
   const beta = document.getElementById('alpha').value
-  ant.run(alpha, beta)
+  const coords = require('./airports').nodes
+  ant.run(coords, alpha, beta)
 })
