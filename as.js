@@ -21,8 +21,8 @@ class Edge {
   }
 
   calculateDistance () {
-    this.distance = Math.sqrt(Math.pow(this.cityFrom.x - this.cityTo.x) +
-      Math.pow(this.cityFrom.y - this.cityTo.y))
+    this.distance = Math.sqrt(Math.pow(this.cityFrom.x - this.cityTo.x, 2) +
+      Math.pow(this.cityFrom.y - this.cityTo.y, 2))
   }
 }
 
