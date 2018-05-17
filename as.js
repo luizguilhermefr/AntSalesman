@@ -97,8 +97,7 @@ class AntSystem {
   disposeAnts () {
     this.ants = []
     for (let i = 0; i < this.cities.length; i++) {
-      const city = this.cities[ i ]
-      this.ants.push(new Ant(city.id, this.cities.slice()))
+      this.ants.push(new Ant(this.cities[ i ].id, this.cities.slice()))
     }
   }
 
@@ -119,15 +118,13 @@ class AntSystem {
       probabilitiesSum += probabilityOfTakingThisEdge
     }
     const drawn = Math.random() * probabilitiesSum
-    let accumulated = .0
     for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
-      if (accumulated[ i ] <= drawn && accumulated[ i + 1 ] >=
+      if (probabilities[ i ] <= drawn && probabilities[ i + 1 ] >=
         drawn) {
         const edge = this.edgesMatrix[ ant.currentCityId ][ i ]
         ant.move(ant.citiesLeft[ i ].id, edge.distance)
         break
       }
-      accumulated += probabilities[ i ]
     }
   }
 
