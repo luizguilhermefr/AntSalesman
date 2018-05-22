@@ -1,23 +1,25 @@
 'use strict'
 
-class City {
-  constructor (id, x, y) {
-    this.id = id
-    this.x = x
-    this.y = y
-  }
-}
-
 class Edge {
-  constructor (cityFrom, cityTo, initialPheromone) {
+  constructor (cityFrom, cityTo, initialPheromone, evaporationCoefficient) {
     this.cityFrom = cityFrom
     this.cityTo = cityTo
     this.calculateDistance()
-    this.pheromone = initialPheromone
+    this.offlinePheromone = initialPheromone
+    this.pheromone = 0
+    this.evaporationCoefficient = evaporationCoefficient
   }
 
-  disposePheromone (pheromone) {
-    this.pheromone += pheromone
+  useNextOfflinePheromone () {
+    this.pheromone += this.offlinePheromone
+  }
+
+  evaporatePheromone () {
+    this.pheromone *= this.evaporationCoefficient
+  }
+
+  disposeOfflinePheromone (pheromone) {
+    this.offlinePheromone += pheromone
   }
 
   calculateDistance () {
@@ -63,7 +65,11 @@ class AntSystem {
   initializeCities (coords) {
     this.cities = []
     for (let i = 0; i < coords.length; i++) {
-      this.cities[ i ] = new City(i, coords[ i ][ 1 ], coords[ i ][ 2 ])
+      this.cities[ i ] = {
+        id: i,
+        x: coords[ i ][ 1 ],
+        y: coords[ i ][ 2 ]
+      }
     }
   }
 
@@ -80,8 +86,8 @@ class AntSystem {
   fillEdgesMatrix () {
     for (let i = 0; i < this.cities.length; i++) {
       for (let j = 0; j < this.cities.length; j++) {
-        this.edgesMatrix[ i ][ j ] = new Edge(this.cities[ i ], this.cities[ j ], this.initialPheromone)
-        this.edgesMatrix[ j ][ i ] = new Edge(this.cities[ j ], this.cities[ i ], this.initialPheromone)
+        this.edgesMatrix[ i ][ j ] = new Edge(this.cities[ i ], this.cities[ j ], this.initialPheromone, this.evaporationCoefficient)
+        this.edgesMatrix[ j ][ i ] = new Edge(this.cities[ j ], this.cities[ i ], this.initialPheromone, this.evaporationCoefficient)
       }
     }
   }
