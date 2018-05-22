@@ -12,6 +12,7 @@ class Edge {
 
   useNextOfflinePheromone () {
     this.pheromone += this.offlinePheromone
+    this.offlinePheromone = 0
   }
 
   evaporatePheromone () {
@@ -42,24 +43,22 @@ class Ant {
     this.distanceTraveled += distance
     this.citiesLeft = this.citiesLeft.filter((city) => city.id !== nextCityId)
   }
+
+  hasCitiesToTravel () {
+    return this.citiesLeft.length > 0
+  }
 }
 
 class AntSystem {
-  run (coords, pheromoneInfluence, distanceInfluence, tauZero, evaporationPerIteration, pheromoneByAnt, generations) {
+  constructor (coords, pheromoneInfluence, distanceInfluence, tauZero, evaporationPerIteration, pheromoneByAnt) {
     this.pheromoneInfluence = pheromoneInfluence
     this.distanceInfluence = distanceInfluence
     this.initialPheromone = tauZero
     this.evaporationCoefficient = evaporationPerIteration
     this.pheromoneByAnt = pheromoneByAnt
-    this.generations = generations
     this.initializeCities(coords)
     this.initializeEdgesMatrix()
     this.fillEdgesMatrix()
-    this.runByGenerations()
-    return {
-      distance: this.bestSolutionDistance,
-      sequence: this.bestSolutionSequence
-    }
   }
 
   initializeCities (coords) {
@@ -92,13 +91,11 @@ class AntSystem {
     }
   }
 
-  runByGenerations () {
-    for (let i = 0; i < this.generations; i++) {
-      this.updateOffilinePheromoneInEdges()
-      this.disposeAnts()
-      this.moveAnts()
-      this.updateBestSolution()
-    }
+  nextIteration () {
+    this.updateOffilinePheromoneInEdges()
+    this.disposeAnts()
+    this.moveAnts()
+    this.updateBestSolution()
   }
 
   updateOffilinePheromoneInEdges () {
@@ -124,22 +121,27 @@ class AntSystem {
 
   moveAnt (antIndex) {
     const ant = this.ants[ antIndex ]
-    let probabilitiesSum = .0
-    const probabilities = []
-    for (let i = 0; i < ant.citiesLeft.length; i++) {
-      const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
-      const probabilityOfTakingThisEdge = this.edgeProbability(edge)
-      probabilities[ i ] = probabilityOfTakingThisEdge
-      probabilitiesSum += probabilityOfTakingThisEdge
-    }
-    const drawn = Math.random() * probabilitiesSum
-    for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
-      if (probabilities[ i ] <= drawn && probabilities[ i + 1 ] >=
-        drawn) {
+    while (ant.hasCitiesToTravel()) {
+      // Initialize probabilites
+      let probabilitiesSum = .0
+      const probabilities = []
+      // Populate probabilites of taking each edge from the remaining ones
+      for (let i = 0; i < ant.citiesLeft.length; i++) {
         const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
-        ant.move(ant.citiesLeft[ i ].id, edge.distance)
-        edge.disposeOfflinePheromone(this.pheromoneByAnt)
-        break
+        const probabilityOfTakingThisEdge = this.edgeProbability(edge)
+        probabilities[ i ] = probabilityOfTakingThisEdge
+        probabilitiesSum += probabilityOfTakingThisEdge
+      }
+      // Draw a number between 0 and the sum of probabilities
+      const drawn = Math.random() * probabilitiesSum
+      // Get which edge should be taken and move using this edge
+      for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
+        if (probabilities[ i ] >= drawn && drawn < probabilities[ i + 1 ]) {
+          const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
+          ant.move(ant.citiesLeft[ i ].id, edge.distance)
+          edge.disposeOfflinePheromone(this.pheromoneByAnt)
+          break
+        }
       }
     }
   }
