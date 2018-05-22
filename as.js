@@ -139,19 +139,20 @@ class AntSystem {
       // Get which edge should be taken and move using this edge
       for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
         if (probabilities[ i ] >= drawn && drawn < probabilities[ i + 1 ]) {
-          const possibleDestiny = ant.citiesLeft[ i ]
-          const edge = this.edgesMatrix[ ant.currentCityId ][ possibleDestiny ]
-          ant.move(ant.citiesLeft[ i ], edge.distance)
+          const nextDestiny = ant.citiesLeft[ i ]
+          const edge = this.edgesMatrix[ ant.currentCityId ][ nextDestiny ]
+          ant.move(nextDestiny, edge.distance)
           edge.disposeOfflinePheromone(this.pheromoneByAnt)
           break
         }
       }
-      const lastCityIndex = ant.citiesLeft[ ant.citiesLeft.length - 1 ]
+      // If for did not return anything, return the last
+      const lastCitiesLeftIndex = ant.citiesLeft.length - 1
+      const lastCityIndex = ant.citiesLeft[ lastCitiesLeftIndex ]
       const edge = this.edgesMatrix[ ant.currentCityId ][ lastCityIndex ]
-      ant.move(ant.citiesLeft[ lastCityIndex ], edge.distance)
+      ant.move(lastCityIndex, edge.distance)
       edge.disposeOfflinePheromone(this.pheromoneByAnt)
     }
-    debugger
   }
 
   edgeProbability (edge) {
