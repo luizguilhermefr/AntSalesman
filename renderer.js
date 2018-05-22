@@ -10,7 +10,7 @@ document.getElementById('btnRun').addEventListener('click', (e) => {
   let ran = 0
   progressBar.style.width = ran + '%'
   progressBar.setAttribute('aria-valuenow', ran)
-  progressBar.innerText = ran + '%'
+  progressBar.innerHTML = ran + '%'
 
   // Get Values from inputs
   const alpha = parseFloat(document.getElementById('alpha').value)
@@ -24,15 +24,15 @@ document.getElementById('btnRun').addEventListener('click', (e) => {
   const coords = require('./airports').nodes
 
   // Execute
-  const as = new As(coords, alpha, beta, tauzero, ro, q)
+  const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
   for (let i = 0; i < generations; i++) {
-    as.nextIteration()
-    ran = ((i + 1) * 100) / generations
+    antSystem.nextIteration()
+    ran = ((i + 1) / generations) * 100
     progressBar.style.width = ran + '%'
     progressBar.setAttribute('aria-valuenow', ran)
-    progressBar.innerText = ran + '%'
+    progressBar.innerHTML = ran + '%'
   }
 
   // Print results
-  resultsInput.value += '\nDistance: ' + as.bestSolutionDistance
+  resultsInput.value += '\nDistance: ' + antSystem.bestSolutionDistance
 })
