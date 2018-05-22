@@ -41,7 +41,7 @@ class Ant {
     this.currentCityId = nextCityId
     this.citiesTraveled.push(nextCityId)
     this.distanceTraveled += distance
-    this.citiesLeft = this.citiesLeft.filter((city) => city.id !== nextCityId)
+    this.citiesLeft = this.citiesLeft.filter((city) => city !== nextCityId)
   }
 
   hasCitiesToTravel () {
@@ -108,8 +108,9 @@ class AntSystem {
 
   disposeAnts () {
     this.ants = []
+    const citiesIds = this.cities.map((city) => city.id)
     for (let i = 0; i < this.cities.length; i++) {
-      this.ants.push(new Ant(this.cities[ i ].id, this.cities.slice()))
+      this.ants.push(new Ant(this.cities[ i ].id, citiesIds.slice()))
     }
   }
 
@@ -127,7 +128,8 @@ class AntSystem {
       const probabilities = []
       // Populate probabilites of taking each edge from the remaining ones
       for (let i = 0; i < ant.citiesLeft.length; i++) {
-        const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
+        const possibleDestiny = ant.citiesLeft[ i ]
+        const edge = this.edgesMatrix[ ant.currentCityId ][ possibleDestiny ]
         const probabilityOfTakingThisEdge = this.edgeProbability(edge)
         probabilities[ i ] = probabilityOfTakingThisEdge
         probabilitiesSum += probabilityOfTakingThisEdge
@@ -137,13 +139,19 @@ class AntSystem {
       // Get which edge should be taken and move using this edge
       for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
         if (probabilities[ i ] >= drawn && drawn < probabilities[ i + 1 ]) {
-          const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
-          ant.move(ant.citiesLeft[ i ].id, edge.distance)
+          const possibleDestiny = ant.citiesLeft[ i ]
+          const edge = this.edgesMatrix[ ant.currentCityId ][ possibleDestiny ]
+          ant.move(ant.citiesLeft[ i ], edge.distance)
           edge.disposeOfflinePheromone(this.pheromoneByAnt)
           break
         }
       }
+      const lastCityIndex = ant.citiesLeft[ ant.citiesLeft.length - 1 ]
+      const edge = this.edgesMatrix[ ant.currentCityId ][ lastCityIndex ]
+      ant.move(ant.citiesLeft[ lastCityIndex ], edge.distance)
+      edge.disposeOfflinePheromone(this.pheromoneByAnt)
     }
+    debugger
   }
 
   edgeProbability (edge) {
