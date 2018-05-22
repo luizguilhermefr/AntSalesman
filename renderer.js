@@ -1,17 +1,26 @@
-const Ant = require('./as')
+const As = require('./as')
 
-const ant = new Ant()
+const as = new As()
+
+const resultsInput = document.getElementById('results')
 
 document.getElementById('btnRun').addEventListener('click', (e) => {
   e.preventDefault()
-  const alpha = document.getElementById('alpha').value
-  const beta = document.getElementById('beta').value
-  const tauzero = document.getElementById('tauzero').value
-  const ro = document.getElementById('ro').value
-  const q = document.getElementById('q').value
-  const generations = document.getElementById('generations').value
-  const resultsInput = document.getElementById('results')
+
+  // Get Values from inputs
+  const alpha = parseFloat(document.getElementById('alpha').value)
+  const beta = parseFloat(document.getElementById('beta').value)
+  const tauzero = parseFloat(document.getElementById('tauzero').value)
+  const ro = parseFloat(document.getElementById('ro').value)
+  const q = parseFloat(document.getElementById('q').value)
+  const generations = parseFloat(document.getElementById('generations').value)
+
+  // Get input files
   const coords = require('./airports').nodes
-  const result = ant.run(coords, alpha, beta, tauzero, ro, q, generations)
-  resultsInput.value = 'Distance: ' + result.distance
+
+  // Execute
+  const result = as.run(coords, alpha, beta, tauzero, ro, q, generations)
+
+  // Print results
+  resultsInput.value += '\nDistance: ' + result.distance
 })

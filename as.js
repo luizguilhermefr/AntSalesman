@@ -94,9 +94,18 @@ class AntSystem {
 
   runByGenerations () {
     for (let i = 0; i < this.generations; i++) {
+      this.updateOffilinePheromoneInEdges()
       this.disposeAnts()
       this.moveAnts()
       this.updateBestSolution()
+    }
+  }
+
+  updateOffilinePheromoneInEdges () {
+    for (let i = 0; i < this.cities.length; i++) {
+      for (let j = 0; j < this.cities.length; j++) {
+        this.edgesMatrix[ i ][ j ].useNextOfflinePheromone()
+      }
     }
   }
 
@@ -118,7 +127,7 @@ class AntSystem {
     let probabilitiesSum = .0
     const probabilities = []
     for (let i = 0; i < ant.citiesLeft.length; i++) {
-      const edge = this.edgesMatrix[ ant.currentCityId ][ i ]
+      const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
       const probabilityOfTakingThisEdge = this.edgeProbability(edge)
       probabilities[ i ] = probabilityOfTakingThisEdge
       probabilitiesSum += probabilityOfTakingThisEdge
@@ -127,8 +136,9 @@ class AntSystem {
     for (let i = 0; i < ant.citiesLeft.length - 1; i++) {
       if (probabilities[ i ] <= drawn && probabilities[ i + 1 ] >=
         drawn) {
-        const edge = this.edgesMatrix[ ant.currentCityId ][ i ]
+        const edge = this.edgesMatrix[ ant.currentCityId ][ ant.citiesLeft[ i ].id ]
         ant.move(ant.citiesLeft[ i ].id, edge.distance)
+        edge.disposeOfflinePheromone(this.pheromoneByAnt)
         break
       }
     }
