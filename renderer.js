@@ -34,17 +34,25 @@ btnRun.addEventListener('click', (e) => {
 
   // Get input files
   const coords = require(filepath).nodes
+  const generationsToRun = generations * coords.length
 
   // Execute
-  const antSystem = new As(coords, alpha, beta, tauzero, 1 - ro, q)
-  for (let i = 0; i < generations; i++) {
+  const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
+  for (let i = 0; i < generationsToRun; i++) {
     antSystem.nextIteration()
-    ran = ((i + 1) / generations) * 100
+    ran = ((i + 1) / generationsToRun) * 100
     progressBar.style.width = ran + '%'
     progressBar.setAttribute('aria-valuenow', ran)
     progressBar.innerHTML = ran + '%'
   }
 
   // Print results
-  resultsInput.value += '\nDistance: ' + antSystem.bestSolutionDistance
+  resultsInput.value += '\nDistance: ' + antSystem.bestSolutionDistance.toFixed(2)
+  resultsInput.value += '\nTour: '
+  for (let i = 0; i < antSystem.bestSolutionSequence.length; i++) {
+    resultsInput.value += antSystem.bestSolutionSequence[i]
+    if (i !== antSystem.bestSolutionSequence.length - 1) {
+      resultsInput.value += ', '
+    }
+  }
 })
