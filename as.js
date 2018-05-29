@@ -58,6 +58,9 @@ class AntSystem {
     this.initialPheromone = tauZero
     this.evaporationCoefficient = evaporationCoefficient
     this.pheromoneByAnt = pheromoneByAnt
+    this.bestSolutionSequence = null
+    this.bestSolutionDistance = null
+    this.bestSolutionGeneration = null
     this.initializeCities(coords)
     this.initializeEdgesMatrix()
     this.fillEdgesMatrix()
@@ -96,11 +99,11 @@ class AntSystem {
     }
   }
 
-  nextIteration () {
+  nextIteration (currentGeneration) {
     this.updateOffilinePheromoneInEdges()
     this.disposeAnts()
     this.moveAnts()
-    this.updateBestSolution()
+    this.updateBestSolution(currentGeneration)
     this.evaporatePheromoneInEdges()
   }
 
@@ -149,7 +152,7 @@ class AntSystem {
       // Draw a number between 0 and the sum of probabilities
       const drawn = Math.random() * probabilitiesSum
       // Get which edge should be taken and move using this edge
-      let probabilityRan = 0;
+      let probabilityRan = 0
       for (let i = 0; i < ant.citiesLeft.length; i++) {
         const probabilityBeforeSum = probabilityRan
         probabilityRan += probabilities[i]
@@ -170,14 +173,20 @@ class AntSystem {
     return tauFactor * etaFactor
   }
 
-  updateBestSolution () {
-    this.bestSolutionSequence = this.ants[0].citiesTraveled
-    this.bestSolutionDistance = this.ants[0].distanceTraveled
+  updateBestSolution (generation) {
+    let bestSolutionSequence = this.ants[0].citiesTraveled
+    let bestSolutionDistance = this.ants[0].distanceTraveled
     for (let i = 1; i < this.ants.length; i++) {
-      if (this.ants[i].distanceTraveled < this.bestSolutionDistance) {
-        this.bestSolutionDistance = this.ants[i].distanceTraveled
-        this.bestSolutionSequence = this.ants[i].citiesTraveled
+      if (this.ants[i].distanceTraveled < bestSolutionDistance) {
+        bestSolutionDistance = this.ants[i].distanceTraveled
+        bestSolutionSequence = this.ants[i].citiesTraveled
       }
+    }
+    if (this.bestSolutionDistance === null || this.bestSolutionDistance >
+      bestSolutionDistance) {
+      this.bestSolutionDistance = bestSolutionDistance
+      this.bestSolutionSequence = bestSolutionSequence
+      this.bestSolutionGeneration = generation
     }
   }
 }

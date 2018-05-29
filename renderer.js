@@ -39,7 +39,7 @@ btnRun.addEventListener('click', (e) => {
   // Execute
   const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
   for (let i = 0; i < generationsToRun; i++) {
-    antSystem.nextIteration()
+    antSystem.nextIteration(i + 1)
     ran = ((i + 1) / generationsToRun) * 100
     progressBar.style.width = ran + '%'
     progressBar.setAttribute('aria-valuenow', ran)
@@ -47,7 +47,9 @@ btnRun.addEventListener('click', (e) => {
   }
 
   // Print results
-  resultsInput.value += '\nDistance: ' + antSystem.bestSolutionDistance.toFixed(2)
+  resultsInput.value += '\nDistance: ' +
+    antSystem.bestSolutionDistance.toFixed(2)
+  resultsInput.value += '\nGeneration: ' + antSystem.bestSolutionGeneration
   resultsInput.value += '\nTour: '
   for (let i = 0; i < antSystem.bestSolutionSequence.length; i++) {
     resultsInput.value += antSystem.bestSolutionSequence[i]
