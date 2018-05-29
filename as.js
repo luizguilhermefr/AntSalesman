@@ -50,11 +50,11 @@ class Ant {
 }
 
 class AntSystem {
-  constructor (coords, pheromoneInfluence, distanceInfluence, tauZero, evaporationPerIteration, pheromoneByAnt) {
+  constructor (coords, pheromoneInfluence, distanceInfluence, tauZero, evaporationCoefficient, pheromoneByAnt) {
     this.pheromoneInfluence = pheromoneInfluence
     this.distanceInfluence = distanceInfluence
     this.initialPheromone = tauZero
-    this.evaporationCoefficient = evaporationPerIteration
+    this.evaporationCoefficient = evaporationCoefficient
     this.pheromoneByAnt = pheromoneByAnt
     this.initializeCities(coords)
     this.initializeEdgesMatrix()
@@ -96,12 +96,21 @@ class AntSystem {
     this.disposeAnts()
     this.moveAnts()
     this.updateBestSolution()
+    this.evaporatePheromoneInEdges()
   }
 
   updateOffilinePheromoneInEdges () {
     for (let i = 0; i < this.cities.length; i++) {
       for (let j = 0; j < this.cities.length; j++) {
         this.edgesMatrix[ i ][ j ].useNextOfflinePheromone()
+      }
+    }
+  }
+
+  evaporatePheromoneInEdges () {
+    for (let i = 0; i < this.cities.length; i++) {
+      for (let j = 0; j < this.cities.length; j++) {
+        this.edgesMatrix[ i ][ j ].evaporatePheromone()
       }
     }
   }
@@ -123,10 +132,10 @@ class AntSystem {
   moveAnt (antIndex) {
     const ant = this.ants[ antIndex ]
     while (ant.hasCitiesToTravel()) {
-      // Initialize probabilites
+      // Initialize probabilities
       let probabilitiesSum = .0
       const probabilities = []
-      // Populate probabilites of taking each edge from the remaining ones
+      // Populate probabilities of taking each edge from the remaining ones
       for (let i = 0; i < ant.citiesLeft.length; i++) {
         const possibleDestiny = ant.citiesLeft[ i ]
         const edge = this.edgesMatrix[ ant.currentCityId ][ possibleDestiny ]

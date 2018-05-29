@@ -1,9 +1,21 @@
 const As = require('./as')
 
+let filepath = null
 const resultsInput = document.getElementById('results')
 const progressBar = document.getElementById('progressbar')
+const btnRun = document.getElementById('btnRun')
 
-document.getElementById('btnRun').addEventListener('click', (e) => {
+document.getElementById('file').addEventListener('change', (e) => {
+  if (e.target.files.length !== 0) {
+    filepath = e.target.files[0].path
+    btnRun.disabled = false
+  } else {
+    filepath = null
+    btnRun.disabled = true
+  }
+})
+
+btnRun.addEventListener('click', (e) => {
   e.preventDefault()
 
   // Reset progressbar
@@ -21,10 +33,10 @@ document.getElementById('btnRun').addEventListener('click', (e) => {
   const generations = parseFloat(document.getElementById('generations').value)
 
   // Get input files
-  const coords = require('./airports').nodes
+  const coords = require(filepath).nodes
 
   // Execute
-  const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
+  const antSystem = new As(coords, alpha, beta, tauzero, 1 - ro, q)
   for (let i = 0; i < generations; i++) {
     antSystem.nextIteration()
     ran = ((i + 1) / generations) * 100
