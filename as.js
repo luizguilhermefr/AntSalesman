@@ -150,9 +150,10 @@ class AntSystem {
       const drawn = Math.random() * probabilitiesSum
       // Get which edge should be taken and move using this edge
       let probabilityRan = 0;
-      for (let i = 1; i < ant.citiesLeft.length; i++) {
+      for (let i = 0; i < ant.citiesLeft.length; i++) {
+        const probabilityBeforeSum = probabilityRan
         probabilityRan += probabilities[i]
-        if ((probabilityRan - probabilities[i - 1]) > drawn && drawn <= probabilityRan) {
+        if (probabilityBeforeSum < drawn && probabilityRan >= drawn) {
           const nextDestiny = ant.citiesLeft[i]
           const edge = this.edgesMatrix[ant.currentCityId][nextDestiny]
           ant.move(nextDestiny, edge.distance)
@@ -160,11 +161,6 @@ class AntSystem {
           break
         }
       }
-      // If for did not return anything, return the first
-      const firstCityIndex = ant.citiesLeft[0]
-      const edge = this.edgesMatrix[ant.currentCityId][firstCityIndex]
-      ant.move(firstCityIndex, edge.distance)
-      edge.disposeOfflinePheromone(this.pheromoneByAnt)
     }
   }
 
