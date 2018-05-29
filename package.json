@@ -4,7 +4,8 @@
   "description": "Traveler Salesman with Ant System and Electron",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager . AntSalesman"
   },
   "repository": "https://github.com/luizguilhermefr/AntSalesman",
   "keywords": [
