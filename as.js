@@ -156,7 +156,7 @@ class AntSystem {
       for (let i = 0; i < ant.citiesLeft.length; i++) {
         const probabilityBeforeSum = probabilityRan
         probabilityRan += probabilities[i]
-        if (probabilityBeforeSum < drawn && probabilityRan >= drawn) {
+        if (probabilityBeforeSum <= drawn && probabilityRan >= drawn) {
           const nextDestiny = ant.citiesLeft[i]
           const edge = this.edgesMatrix[ant.currentCityId][nextDestiny]
           ant.move(nextDestiny, edge.distance)

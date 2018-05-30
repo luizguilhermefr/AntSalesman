@@ -2,7 +2,6 @@ const As = require('./as')
 
 let filepath = null
 const resultsInput = document.getElementById('results')
-const progressBar = document.getElementById('progressbar')
 const btnRun = document.getElementById('btnRun')
 
 document.getElementById('file').addEventListener('change', (e) => {
@@ -17,12 +16,6 @@ document.getElementById('file').addEventListener('change', (e) => {
 
 btnRun.addEventListener('click', (e) => {
   e.preventDefault()
-
-  // Reset progressbar
-  let ran = 0
-  progressBar.style.width = ran + '%'
-  progressBar.setAttribute('aria-valuenow', ran)
-  progressBar.innerHTML = ran + '%'
 
   // Get Values from inputs
   const alpha = parseFloat(document.getElementById('alpha').value)
@@ -40,10 +33,6 @@ btnRun.addEventListener('click', (e) => {
   const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
   for (let i = 0; i < generationsToRun; i++) {
     antSystem.nextIteration(i + 1)
-    ran = ((i + 1) / generationsToRun) * 100
-    progressBar.style.width = ran + '%'
-    progressBar.setAttribute('aria-valuenow', ran)
-    progressBar.innerHTML = ran + '%'
   }
 
   // Print results
