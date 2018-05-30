@@ -24,13 +24,15 @@ btnRun.addEventListener('click', (e) => {
   const ro = parseFloat(document.getElementById('ro').value)
   const q = parseFloat(document.getElementById('q').value)
   const generations = parseFloat(document.getElementById('generations').value)
+  const antsCoef = parseFloat(document.getElementById('ants').value)
 
   // Get input files
   const coords = require(filepath).nodes
-  const generationsToRun = generations * coords.length
+  const antsCount = Math.floor(antsCoef * coords.length)
+  const generationsToRun = generations * antsCount
 
   // Execute
-  const antSystem = new As(coords, alpha, beta, tauzero, ro, q)
+  const antSystem = new As(coords, alpha, beta, tauzero, ro, q, antsCount)
   for (let i = 0; i < generationsToRun; i++) {
     antSystem.nextIteration(i + 1)
   }

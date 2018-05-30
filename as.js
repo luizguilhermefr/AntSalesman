@@ -52,12 +52,13 @@ class Ant {
 class AntSystem {
   constructor (
     coords, pheromoneInfluence, distanceInfluence, tauZero,
-    evaporationCoefficient, pheromoneByAnt) {
+    evaporationCoefficient, pheromoneByAnt, antsCount) {
     this.pheromoneInfluence = pheromoneInfluence
     this.distanceInfluence = distanceInfluence
     this.initialPheromone = tauZero
     this.evaporationCoefficient = evaporationCoefficient
     this.pheromoneByAnt = pheromoneByAnt
+    this.antsCount = antsCount
     this.bestSolutionSequence = null
     this.bestSolutionDistance = null
     this.bestSolutionGeneration = null
@@ -126,9 +127,10 @@ class AntSystem {
   disposeAnts () {
     this.ants = []
     const citiesIds = this.cities.map((city) => city.id)
-    this.cities.forEach((city) => {
+    for (let i = 0; i < this.antsCount; i++) {
+      const city = this.cities[i]
       this.ants.push(new Ant(city.id, citiesIds.slice()))
-    })
+    }
   }
 
   moveAnts () {
